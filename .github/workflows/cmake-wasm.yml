@@ -16,6 +16,7 @@ jobs:
         C_FLAGS: ['-s STANDALONE_WASM', '-s STANDALONE_WASM -msimd128', '-s STANDALONE_WASM -msse -msse2', '-s STANDALONE_WASM -msse -msse2 -msimd128']
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - name: Setup emsdk
       uses: mymindstorm/setup-emsdk@v11
 
