@@ -30,7 +30,7 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration
-      run: emcmake cmake --build ${{github.workspace}}/build --config ${{matrix.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/build --config ${{matrix.BUILD_TYPE}}
 
     - name: Test with wasmtime
       run: |
