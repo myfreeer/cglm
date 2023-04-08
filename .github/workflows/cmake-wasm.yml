@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         BUILD_TYPE: [Release, Debug]
-        C_FLAGS: ['', '-msimd128', '-msse -msse2', '-msse -msse2 -msimd128']
+        C_FLAGS: ['', '-msimd128', '-msse -msse2 -msimd128', '-msse -msse2 -msse3 -msse4 -msimd128']
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
