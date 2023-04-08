@@ -2,9 +2,7 @@ name: CMake WebAssembly
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches: [ "myfreeer-patch-1" ]
 
 env:
   wasmtime_version: v7.0.0
