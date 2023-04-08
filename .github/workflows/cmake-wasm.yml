@@ -35,7 +35,7 @@ jobs:
     - name: Test with wasmtime
       run: |
         cd ${{github.workspace}}
-        ls -lh ${{github.workspace}}/build/tests
+        ls -lh ${{github.workspace}}/build/
         wget --no-verbose https://github.com/bytecodealliance/wasmtime/releases/download/${{env.wasmtime_version}}/wasmtime-${{env.wasmtime_version}}-x86_64-linux.tar.xz
         tar xf wasmtime-${{env.wasmtime_version}}-x86_64-linux.tar.xz
         ./wasmtime-${{env.wasmtime_version}}-x86_64-linux/wasmtime run --wasm-features simd ${{github.workspace}}/build/tests
