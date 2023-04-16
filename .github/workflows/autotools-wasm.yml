@@ -17,7 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CC: ${{github.workspace}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0/bin/clang
-      CFLAGS: ${{matrix.C_FLAGS}}
+      CFLAGS: ${{matrix.C_FLAGS}} -D_WASI_EMULATED_PROCESS_CLOCKS=1
+      LDFLAGS: -lwasi-emulated-process-clocks
     steps:
     - uses: actions/checkout@v3
 
