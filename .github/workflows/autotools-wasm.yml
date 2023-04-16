@@ -1,0 +1,40 @@
+name: Autotools WebAssembly
+
+env:
+  wasmtime_version: v7.0.0
+  wasmer_version: v3.1.1
+
+on:
+  push:
+    branches: [ "myfreeer-patch-2" ]
+
+jobs:
+  build_wasi_sdk:
+    strategy:
+      matrix:
+        C_FLAGS: ['', '-msimd128']
+        wasi_sdk_version: [19, 20]
+    runs-on: ubuntu-latest
+    env:
+      CC: ${{github.workspace}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0/bin/clang
+      CFLAGS: ${{matrix.C_FLAGS}}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Downloading wasi-sdk
+      run: |
+        cd ${{github.workspace}}
+        wget --no-verbose https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${{matrix.wasi_sdk_version}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0-linux.tar.gz
+        tar xf wasi-sdk-${{matrix.wasi_sdk_version}}.0-linux.tar.gz
+
+    - name: autogen
+      run: sh ./autogen.sh
+    - name: configure
+      run: ./configure --host=wasm32-unknown-wasi --disable-shared --enable-static
+    - name: make
+      env:
+        CC: ${{github.workspace}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0/bin/clang
+        CFLAGS: ${{matrix.C_FLAGS}}
+      run: make
+    - name: make check
+      run: make check
