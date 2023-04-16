@@ -16,6 +16,9 @@ jobs:
         wasi_sdk_version: [19, 20]
     runs-on: ubuntu-latest
     env:
+      AR: ${{github.workspace}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0/bin/llvm-ar
+      RANLIB: ${{github.workspace}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0/bin/llvm-ranlib
+      LD: ${{github.workspace}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0/bin/wasm-ld
       CC: ${{github.workspace}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0/bin/clang
       CFLAGS: ${{matrix.C_FLAGS}} -D_WASI_EMULATED_PROCESS_CLOCKS=1
       LDFLAGS: -lwasi-emulated-process-clocks
