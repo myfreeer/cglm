@@ -59,5 +59,5 @@ jobs:
     - uses: BSFishy/meson-build@v1.0.3
       with:
         directory: build
-        setup-options: --cross-file ${{github.workspace}}/meson_cross_wasi.txt
+        setup-options: --cross-file ${{github.workspace}}/meson_cross_wasi.txt --default-library=static
         action: test
