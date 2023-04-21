@@ -41,7 +41,7 @@ jobs:
         strip = '${{github.workspace}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0/bin/strip'
 
         [properties]
-        c_args =      [ '-D_WASI_EMULATED_PROCESS_CLOCKS=1',  '-Wno-unused-parameter'] 
+        c_args =      [ '-D_WASI_EMULATED_PROCESS_CLOCKS=1',  '-Wno-unused-parameter', '${{matrix.C_FLAGS}}'] 
         c_link_args = [ '-lwasi-emulated-process-clocks']
 
         [cmake]
@@ -58,5 +58,5 @@ jobs:
     - uses: BSFishy/meson-build@v1.0.3
       with:
         directory: build
-        setup-options: --cross-file ${{github.workspace}}/meson_cross_wasi.txt --default-library=static -Dbuild_tests=true -Dc_args="${{matrix.C_FLAGS}}"
+        setup-options: --cross-file ${{github.workspace}}/meson_cross_wasi.txt --default-library=static -Dbuild_tests=true
         action: test
