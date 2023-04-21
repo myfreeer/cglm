@@ -44,9 +44,6 @@ jobs:
         c_args =      [ '-D_WASI_EMULATED_PROCESS_CLOCKS=1',  '-Wno-unused-parameter'] 
         c_link_args = [ '-lwasi-emulated-process-clocks']
 
-        [built-in options]
-        default_library = 'static'
-
         [cmake]
 
         CMAKE_FIND_ROOT_PATH_MODE_PROGRAM  = 'NEVER'
@@ -61,5 +58,5 @@ jobs:
     - uses: BSFishy/meson-build@v1.0.3
       with:
         directory: build
-        setup-options: --cross-file ${{github.workspace}}/meson_cross_wasi.txt -Dbuild_tests=true -Dc_args="${{matrix.C_FLAGS}}"
+        setup-options: --cross-file ${{github.workspace}}/meson_cross_wasi.txt --default_library=static -Dbuild_tests=true -Dc_args="${{matrix.C_FLAGS}}"
         action: test
