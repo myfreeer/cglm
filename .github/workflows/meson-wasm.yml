@@ -47,12 +47,17 @@ jobs:
         EOF
         cat ${{github.workspace}}/meson_cross_emsdk.txt
 
-    - uses: actions/setup-python@v1
-    - uses: BSFishy/meson-build@v1.0.3
-      with:
-        directory: build
-        setup-options: --cross-file ${{github.workspace}}/meson_cross_emsdk.txt --default-library=static -Dbuild_tests=true
-        action: test
+    - uses: actions/setup-python@v4
+    
+    - name: Install meson
+      run: |
+        sudo python3 -m pip install meson ninja
+
+    - name: Build with meson
+      run: |
+        meson setup build --cross-file ${{github.workspace}}/meson_cross_emsdk.txt --default-library=static -Dbuild_tests=true
+        meson test -C build
+
     - name: Test with wasmtime
       run: |
         cd ${{github.workspace}}
@@ -60,6 +65,7 @@ jobs:
         wget --no-verbose https://github.com/bytecodealliance/wasmtime/releases/download/${{env.wasmtime_version}}/wasmtime-${{env.wasmtime_version}}-x86_64-linux.tar.xz
         tar xf wasmtime-${{env.wasmtime_version}}-x86_64-linux.tar.xz
         ./wasmtime-${{env.wasmtime_version}}-x86_64-linux/wasmtime run --wasm-features simd ${{github.workspace}}/build/tests.wasm
+
     - name: Test with wasmer
       run: |
         cd ${{github.workspace}}
