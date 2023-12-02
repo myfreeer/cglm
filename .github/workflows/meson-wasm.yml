@@ -53,3 +53,18 @@ jobs:
         directory: build
         setup-options: --cross-file ${{github.workspace}}/meson_cross_emsdk.txt --default-library=static -Dbuild_tests=true
         action: test
+    - name: Test with wasmtime
+      run: |
+        cd ${{github.workspace}}
+        ls -lh ${{github.workspace}}/build/
+        wget --no-verbose https://github.com/bytecodealliance/wasmtime/releases/download/${{env.wasmtime_version}}/wasmtime-${{env.wasmtime_version}}-x86_64-linux.tar.xz
+        tar xf wasmtime-${{env.wasmtime_version}}-x86_64-linux.tar.xz
+        ./wasmtime-${{env.wasmtime_version}}-x86_64-linux/wasmtime run --wasm-features simd ${{github.workspace}}/build/tests.wasm
+    - name: Test with wasmer
+      run: |
+        cd ${{github.workspace}}
+        mkdir wasmer
+        cd wasmer
+        wget --no-verbose https://github.com/wasmerio/wasmer/releases/download/${{env.wasmer_version}}/wasmer-linux-amd64.tar.gz
+        tar xf wasmer-linux-amd64.tar.gz
+        ./bin/wasmer run --enable-simd ${{github.workspace}}/build/tests.wasm
