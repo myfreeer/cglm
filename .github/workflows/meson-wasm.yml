@@ -12,7 +12,8 @@ jobs:
   build_emsdk:
     strategy:
       matrix:
-        C_FLAGS: ['', '-msse -msse2 -msse3 -msse4 -msimd128']
+        BUILD_TYPE: [debug, debugoptimized, release, minsize]
+        C_FLAGS: ['', '-msimd128', '-msse -msse2 -msimd128', '-msse -msse2 -msse3 -msse4 -msimd128']
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -30,7 +31,7 @@ jobs:
         cpp = '`which em++`'
         ar = '`which emar`'
         
-        [properties]
+        [built-in options]
         
         c_args = ['-Wno-unused-parameter']
         c_link_args = ['-s', 'STANDALONE_WASM']
@@ -55,7 +56,7 @@ jobs:
 
     - name: Build with meson
       run: |
-        meson setup build --cross-file ${{github.workspace}}/meson_cross_emsdk.txt --default-library=static -Dbuild_tests=true
+        meson setup build -Dbuildtype=${{matrix.BUILD_TYPE}} --cross-file ${{github.workspace}}/meson_cross_emsdk.txt --default-library=static -Dbuild_tests=true
         meson test -C build
 
     - name: Test with wasmtime
