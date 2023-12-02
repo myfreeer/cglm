@@ -35,7 +35,7 @@ jobs:
         c_args = ['-D_WASI_EMULATED_PROCESS_CLOCKS=1']
         c_link_args = ['-s' 'STANDALONE_WASM', '-lwasi-emulated-process-clocks']
         cpp_args = ['-D_WASI_EMULATED_PROCESS_CLOCKS=1']
-        c_link_args = ['-s' 'STANDALONE_WASM', '-lwasi-emulated-process-clocks']
+        cpp_link_args = ['-s' 'STANDALONE_WASM', '-lwasi-emulated-process-clocks']
         
         [host_machine]
         
