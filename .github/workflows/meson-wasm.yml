@@ -9,54 +9,47 @@ env:
   wasmer_version: v3.1.1
 
 jobs:
-  build_wasi_sdk:
+  build_emsdk:
     strategy:
       matrix:
-        C_FLAGS: ['', '-msimd128']
-        wasi_sdk_version: [19, 20]
+        C_FLAGS: ['', '-msse -msse2 -msse3 -msse4 -msimd128']
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
+    - name: Setup emsdk
+      uses: mymindstorm/setup-emsdk@v13
 
-    - name: Downloading wasi-sdk
-      run: |
-        cd ${{github.workspace}}
-        wget --no-verbose https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${{matrix.wasi_sdk_version}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0-linux.tar.gz
-        tar xf wasi-sdk-${{matrix.wasi_sdk_version}}.0-linux.tar.gz
+    - name: Verify emsdk
+      run: emcc -v
 
     - name: Creating cross file
       run: |
-        cat << EOF > ${{github.workspace}}/meson_cross_wasi.txt
-        [host_machine] 
-        system = 'wasi'
+        cat << EOF > ${{github.workspace}}/meson_cross_emsdk.txt
+        [binaries]
+        c = '`which emcc`'
+        cpp = '`which em++`'
+        ar = '`which emar`'
+        
+        [properties]
+        
+        c_args = ['-D_WASI_EMULATED_PROCESS_CLOCKS=1']
+        c_link_args = ['-s' 'STANDALONE_WASM', '-lwasi-emulated-process-clocks']
+        cpp_args = ['-D_WASI_EMULATED_PROCESS_CLOCKS=1']
+        c_link_args = ['-s' 'STANDALONE_WASM', '-lwasi-emulated-process-clocks']
+        
+        [host_machine]
+        
+        system = 'emscripten'
         cpu_family = 'wasm32'
         cpu = 'wasm32'
         endian = 'little'
 
-        [binaries]
-        c =  '${{github.workspace}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0/bin/clang'
-        ar = '${{github.workspace}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0/bin/ar'
-        ld = '${{github.workspace}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0/bin/wasm-ld'
-        strip = '${{github.workspace}}/wasi-sdk-${{matrix.wasi_sdk_version}}.0/bin/strip'
-
-        [properties]
-        c_args =      [ '-D_WASI_EMULATED_PROCESS_CLOCKS=1',  '-Wno-unused-parameter', '${{matrix.C_FLAGS}}'] 
-        c_link_args = [ '-lwasi-emulated-process-clocks']
-
-        [cmake]
-
-        CMAKE_FIND_ROOT_PATH_MODE_PROGRAM  = 'NEVER'
-        CMAKE_FIND_ROOT_PATH_MODE_LIBRARY  = 'ONLY'
-        CMAKE_FIND_ROOT_PATH_MODE_INCLUDE  = 'ONLY'
-        CMAKE_FIND_ROOT_PATH_MODE_PACKAGE  = 'ONLY'
         EOF
-        cat ${{github.workspace}}/meson_cross_wasi.txt
-
+        cat ${{github.workspace}}/meson_cross_emsdk.txt
 
     - uses: actions/setup-python@v1
     - uses: BSFishy/meson-build@v1.0.3
       with:
         directory: build
-        setup-options: --cross-file ${{github.workspace}}/meson_cross_wasi.txt --default-library=static -Dbuild_tests=true
+        setup-options: --cross-file ${{github.workspace}}/meson_cross_emsdk.txt --default-library=static -Dbuild_tests=true
         action: test
