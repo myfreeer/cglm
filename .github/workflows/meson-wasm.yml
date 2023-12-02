@@ -32,10 +32,10 @@ jobs:
         
         [properties]
         
-        c_args = ['-D_WASI_EMULATED_PROCESS_CLOCKS=1', '-Wno-unused-parameter']
-        c_link_args = ['-s', 'STANDALONE_WASM', '-lwasi-emulated-process-clocks']
-        cpp_args = ['-D_WASI_EMULATED_PROCESS_CLOCKS=1', '-Wno-unused-parameter']
-        cpp_link_args = ['-s', 'STANDALONE_WASM', '-lwasi-emulated-process-clocks']
+        c_args = ['-Wno-unused-parameter']
+        c_link_args = ['-s', 'STANDALONE_WASM']
+        cpp_args = ['-Wno-unused-parameter']
+        cpp_link_args = ['-s', 'STANDALONE_WASM']
         
         [host_machine]
         
